@@ -1,3 +1,7 @@
+using AllPurpose.Controllers;
+using AllPurpose.Logic;
+using AllPurpose.Middleware;
+using AllPurpose.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -37,6 +41,8 @@ namespace AllPurpose
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AllPurpose", Version = "v1" });
             });
+
+            services.AddSingleton<IJwtHandler, JwtHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,8 +59,7 @@ namespace AllPurpose
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
