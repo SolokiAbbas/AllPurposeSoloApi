@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-AllPurpose-22D5F7CF-958B-4692-9771-70FCE494B60E</UserSecretsId>
-    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <DockerDefaultTargetOS>linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
