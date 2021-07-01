@@ -1,8 +1,11 @@
 ﻿using AllPurpose.Logic;
+using AllPurpose.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Options;
 using System;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,11 +17,9 @@ namespace AllPurpose.Attributes
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var jwtHandler = new JwtHandler();
-            var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            var acceptJwt = jwtHandler.ValidateJwt(token);
+            var role = context.HttpContext.Items["User"];
 
-            if (acceptJwt == false)
+            if (role == null)
             {
                 // not logged in
                 context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };

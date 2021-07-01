@@ -1,4 +1,5 @@
 ﻿using AllPurpose.Models;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,11 @@ namespace AllPurpose.Logic
     {
         private TokenValidationParameters DefaultTokenValidationParameters { get; }
         private int TokenLifetime { get; }
-        public JwtHandler()
+        private AllPurpOptions Options { get; }
+        public JwtHandler(IOptions<AllPurpOptions> options)
         {
-            var secret = "secretsecret";
+            Options = options.Value;
+            var secret = Options.JwtSecret;
             TokenLifetime = 3600;
             var bytes = Encoding.Unicode.GetBytes(secret);
             var randomKey = new SymmetricSecurityKey(bytes);

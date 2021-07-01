@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AllPurpose.Models;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +12,19 @@ namespace AllPurpose.Middleware
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;
-
-        public JwtMiddleware(RequestDelegate next)
+        private IJwtHandler JwtHandler { get; }
+        public JwtMiddleware(RequestDelegate next, IJwtHandler jwtHandler)
         {
             _next = next;
+            JwtHandler = jwtHandler;
         }
 
         public async Task Invoke(HttpContext context)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            
-            if (token != null)
+            context.Items["User"] = null;
+
+            if (JwtHandler.ValidateJwt(token))
             {
                 context.Items["User"] = "User"; 
             }

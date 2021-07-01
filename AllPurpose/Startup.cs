@@ -33,16 +33,31 @@ namespace AllPurpose
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
 
             services.AddControllers();
+            services.Configure<Models.AllPurpOptions>(options =>
+            {
+                Configuration.GetSection("Azure").Bind(options);
+                options.JwtSecret = Configuration["JwtSecret"];
+            });
+            services.Configure<Models.AllPurpOptions>(options =>
+            {
+                Configuration.GetSection("Apis").Bind(options);
+                options.PokemonApi = Configuration["Apis:Pokemon"];
+                options.CountriesApi = Configuration["Apis:Countries"];
+                options.NasaApi = Configuration["Apis:Nasa"];
+            });
+
+            services.AddHttpClient("GeneralApi");
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AllPurpose", Version = "v1" });
             });
 
             services.AddSingleton<IJwtHandler, JwtHandler>();
+            services.AddSingleton<IGeneralApiClient, GeneralApiClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
