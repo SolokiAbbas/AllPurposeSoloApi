@@ -16,6 +16,22 @@ When you make a request you'll need to include 2 payload objects, query, and var
 query: contains your query or mutation strings.
 variables: contains the variable values used within your query.
 
-### Exampl GraphQl
+### Example GraphQl
+query{
+  Character(id: $id){
+    name {
+      first
+      middle
+      last
+      full
+      native
+      userPreferred
+    }
+    gender
+    age
+    siteUrl
+  }
+}
 
+variables: {id = 246}
 
