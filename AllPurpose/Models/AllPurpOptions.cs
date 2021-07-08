@@ -12,5 +12,8 @@ namespace AllPurpose.Models
         public string PokemonApi { get; set; }
         public string CountriesApi { get; set; }
         public string NasaApi { get; set; }
+        public string AnimeListGQL { get; set; }
+        public string StarWarsGQL { get; set; }
+
     }
 }

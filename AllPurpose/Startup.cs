@@ -2,6 +2,8 @@ using AllPurpose.Controllers;
 using AllPurpose.Logic;
 using AllPurpose.Middleware;
 using AllPurpose.Models;
+using GraphQL.Client.Http;
+using GraphQL.Client.Serializer.Newtonsoft;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -36,6 +38,7 @@ namespace AllPurpose
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //    .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
 
+
             services.AddControllers();
             services.Configure<Models.AllPurpOptions>(options =>
             {
@@ -49,13 +52,20 @@ namespace AllPurpose
                 options.CountriesApi = Configuration["Apis:Countries"];
                 options.NasaApi = Configuration["Apis:Nasa"];
             });
-
+            services.Configure<Models.AllPurpOptions>(options =>
+            {
+                Configuration.GetSection("GraphQL").Bind(options);
+                options.AnimeListGQL = Configuration["GraphQL:AnimeList"];
+                options.StarWarsGQL = Configuration["GraphQL:StarWars"];
+            });
+                                  
             services.AddHttpClient("GeneralApi");
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AllPurpose", Version = "v1" });
             });
 
+            services.AddSingleton<IGraphQLClient, GraphQLClient>();
             services.AddSingleton<IJwtHandler, JwtHandler>();
             services.AddSingleton<IGeneralApiClient, GeneralApiClient>();
         }
